@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>LSTV Go Proxy {{ .Version }}</title>
+        <script>
+            function toggleCollapse(header) {
+                header.closest("table").classList.toggle("collapsed");
+            }
+
+            function init() {
+                let tableHeaders = document.querySelectorAll("table.collapsed tr:first-child th");
+                for (let tableHeader of tableHeaders) {
+                    tableHeader.addEventListener("click", event => {
+                        toggleCollapse(event.currentTarget);
+                    });
+                    tableHeader.addEventListener("keydown", event => {
+                        if (event.code === "Enter") {
+                            toggleCollapse(event.currentTarget);
+                        }
+                    });
+                }
+            }
+        </script>
+        <style>
+            @media (min-resolution: 192dpi) {
+                body {
+                    font-size: 1.2em;
+                }
+            }
+
+            body {
+                background-color: #002823;
+                color: #ffffff;
+                font-family: monospace;
+                margin: 0;
+            }
+
+            h1 {
+                background-color: #002823;
+                bottom: 0;
+                color: #005b51;
+                font-size: 2em;
+                margin: 0;
+                padding: 0.5em;
+                position: fixed;
+            }
+
+            h2 {
+                font-family: sans-serif;
+                margin-top: 1.2em;
+                padding-left: 0.5em;
+                white-space: nowrap;
+            }
+
+            h2 > span {
+                border: 0.1em solid #005b51;
+                border-left: none;
+                border-right: none;
+                padding: 0.4em;
+            }
+
+            div.content {
+                display: flex;
+                flex-wrap: wrap;
+                padding-bottom: 8em;
+            }
+
+            div.content > div {
+                flex: 30%;
+            }
+
+            div.error {
+                color: #e02020;
+                margin: 1em;
+            }
+
+            div.error::before {
+                background-color: #e02020;
+                color: #303030;
+                content: "error";
+                margin-right: 0.2em;
+                padding-left: 0.2em;
+                padding-right: 0.2em;
+            }
+
+            table {
+                border-collapse: collapse;
+                margin-top: 1em;
+                margin-left: 1em;
+            }
+
+            table tr:first-child th {
+                cursor: pointer;
+                white-space: nowrap;
+            }
+
+            table tr:first-child th:focus {
+                outline: none;
+            }
+
+            table tr:first-child th::after {
+                color: #005b51;
+                content: '△';
+                display: inline-block;
+                margin: 0 0.5em;
+            }
+
+            table tr:first-child th:focus::after {
+                color: inherit;
+            }
+
+            table tr:first-child th:hover::after {
+                content: '▲';
+            }
+
+            table.collapsed tr {
+                display: none;
+            }
+
+            table.collapsed tr:first-child {
+                display: table-row;
+            }
+
+            table.collapsed tr:first-child th {
+                border-bottom: none;
+            }
+
+            table.collapsed tr:first-child th::after {
+                content: '▽';
+            }
+
+            table.collapsed tr:first-child th:hover::after {
+                content: '▼';
+            }
+
+            th, td {
+                padding: 0.2em;
+            }
+
+            code, table.configured-modules, table.stored-modules, table.configured-downloads {
+                font-family: monospace;
+                font-size: 1.2em;
+            }
+
+            table.configured-module-disabled th.configured-modules-name::before {
+                content: '⛔';
+            }
+
+            table.configured-module-package th.configured-modules-name::before {
+                content: '📦';
+            }
+
+            th.stored-modules-name::before {
+                content: '🗄';
+            }
+
+            th.configured-downloads-name::before {
+                content: '📥';
+            }
+
+            th.configured-modules-name::before, th.stored-modules-name::before, th.configured-downloads-name::before {
+                margin-right: 0.5em;
+            }
+
+            th.configured-modules-name, th.stored-modules-name, th.configured-downloads-name {
+                border-bottom: 0.1em solid #c0c0c0;
+                font-weight: normal;
+                text-align: left;
+            }
+
+            th.configured-modules-param-name, th.configured-downloads-param-name {
+                border-top: 0.1em solid #005b51;
+                color: #008072;
+                font-weight: normal;
+                text-align: right;
+                min-width: 8em;
+            }
+
+            td.configured-modules-param-value, td.configured-downloads-param-value {
+                border-top: 0.1em solid #005b51;
+                padding-left: 0.5em;
+                text-align: left;
+                min-width: 8em;
+            }
+
+            td.stored-modules-version {
+                border-top: 0.1em solid #005b51;
+                text-align: right;
+                min-width: 4em;
+            }
+
+            td.stored-modules-downloaded {
+                border-top: 0.1em solid #005b51;
+                text-align: center;
+                min-width: 16em;
+            }
+
+            td.stored-modules-version-size {
+                border-top: 0.1em solid #005b51;
+                text-align: right;
+                min-width: 4em;
+            }
+
+            td.stored-modules-version-total {
+                border-top: 0.1em solid #c0c0c0;
+                color: #008072;
+                text-align: right;
+            }
+
+            td.stored-modules-version-total-size {
+                border-top: 0.1em solid #c0c0c0;
+                padding-left: 0.5em;
+                text-align: right;
+            }
+
+        </style>
+    </head>
+    <body onload="init()">
+        <div class="content">
+            <div>
+                <h2><span>Configured modules</span></h2>
+                {{ range .ConfiguredModules }}
+                <table class="configured-modules {{ . | configuredModuleType }} collapsed">
+                    <tr>
+                        <th colspan="2" class="configured-modules-name" tabindex="0">{{ index . 0 }}</th>
+                    </tr>
+                    {{ $params := slice . 1 }}
+                    {{ range $i, $value := $params }}
+                    {{ if $i | isZeroOrEven }}
+                    <tr>
+                        <th class="configured-modules-param-name" scope="rowgroup">{{ $value }}</th>
+                        {{ else }}
+                        <td class="configured-modules-param-value">{{ $value }}</td>
+                    </tr>
+                    {{ end }}
+                    {{ end }}
+                </table>
+                {{ end }}
+            </div>
+            <div>
+                <h2><span>Stored modules</span></h2>
+                {{ if .StoredModulesErr }}
+                <div class="error">{{ .StoredModulesErr }}</div>
+                {{ end }}
+                {{ range .StoredModules }}
+                <table class="stored-modules collapsed">
+                    <tr>
+                        <th colspan="3" class="stored-modules-name" scope="colgroup" tabindex="0">{{ .Name }}</th>
+                    </tr>
+                    {{ range .Versions }}
+                    <tr>
+                        <td class="stored-modules-version">{{ .Version }}</td>
+                        <td class="stored-modules-downloaded">{{ .Downloaded | formatTime }}</td>
+                        <td class="stored-modules-version-size">{{ .Size | formatSize }}</td>
+                    </tr>
+                    {{ end }}
+                    <tr>
+                        <td class="stored-modules-version-total" colspan="2">total</td>
+                        <td class="stored-modules-version-total-size">{{ .TotalSize | formatSize }}</td>
+                    </tr>
+                </table>
+                {{ end }}
+            </div>
+            <div>
+                <h2><span>Configured downloads</span></h2>
+                {{ range .ConfiguredDownloads }}
+                <table class="configured-downloads collapsed">
+                    <tr>
+                        <th colspan="2" class="configured-downloads-name" tabindex="0">{{ index . 0 }}</th>
+                    </tr>
+                    {{ $params := slice . 1 }}
+                    {{ range $i, $value := $params }}
+                    {{ if $i | isZeroOrEven }}
+                    <tr>
+                        <th class="configured-downloads-param-name" scope="rowgroup">{{ $value }}</th>
+                        {{ else }}
+                        <td class="configured-downloads-param-value">{{ $value }}</td>
+                    </tr>
+                    {{ end }}
+                    {{ end }}
+                </table>
+                {{ end }}
+            </div>
+        </div>
+        <h1>| LIVESPORT TV | Go Proxy {{.Version}} |</h1>
+    </body>
+</html>

@@ -1,0 +1,58 @@
+{
+  "addr": ":8080",
+  "storage": "./cache",
+  "log_level": "trace",
+  "default_go_proxy_url": "http://proxy.golang.org",
+  "modules": [
+    {
+      "name": "example.lstv.dev",
+      "source": null
+    },
+    {
+      "name": "example.lstv.dev/monorepo",
+      "source": "gitlab.com",
+      "source_params": {
+        "project_id": 1,
+        "dir": "component1",
+        "tag_prefix": "component1-",
+        "version_dir": false
+      }
+    },
+    {
+      "name": "example.lstv.dev/monorepo",
+      "source": "gitlab.com",
+      "source_params": {
+        "project_id": 1,
+        "dir": "component2",
+        "tag_prefix": "component2-",
+        "version_dir": false
+      }
+    }
+  ],
+  "downloads": {
+    "component1-specification": {
+      "mode": "generic-packages",
+      "source": "gitlab.com",
+      "source_params": {
+        "project_id": 1,
+        "disable_architecture": true,
+        "file_extension": ".yaml"
+      }
+    }
+  },
+  "sources": [
+    {
+      "name": "gitlab.com",
+      "type": "gitlab",
+      "url": "https://gitlab.com",
+      "auth": "this-is-auth-token",
+      "allow_insecure_tls": false
+    }
+  ],
+  "versions": {
+    "go": "1.17.4",
+    "modules": [
+      "example.com/my-favorite-module"
+    ]
+  }
+}

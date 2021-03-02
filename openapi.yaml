@@ -1,0 +1,346 @@
+openapi: 3.0.3
+info:
+  description: "Go proxy with monorepo support (more projects with `go.mod` and different versions in the same GIT repository)."
+  version: "1.0.0"
+  title: "Go Proxy"
+  contact:
+    name: "maintainer"
+    email: "goproxy@livesporttv.cz"
+    url: "https://livesporttv.cz/"
+tags:
+  - name: "common"
+  - name: "modules"
+  - name: "downloads"
+paths:
+  /:
+    get:
+      tags:
+        - "common"
+      summary: "Main page."
+      description: "Go proxy main page."
+      responses:
+        "200":
+          description: "Go proxy main page."
+  /healthz:
+    get:
+      tags:
+        - "common"
+      summary: "Service status."
+      description: "Web server status."
+      responses:
+        "204":
+          description: "OK."
+  /{module}/@v/list:
+    get:
+      tags:
+        - "modules"
+      summary: "List module versions."
+      description: "Returns a list of known versions of the given module in plain text, one per line."
+      parameters:
+        - in: "path"
+          name: "module"
+          description: "Module name."
+          required: true
+          schema:
+            $ref: "#/components/schemas/Module"
+      responses:
+        "200":
+          description: "List of module versions."
+          content:
+            "text/plain; charset=UTF-8":
+              schema:
+                $ref: "#/components/schemas/ModuleVersionsList"
+        "307":
+          description: "Module not found, fallthrough to default Go proxy."
+        "400":
+          description: "Bad request."
+        "404":
+          description: "Fallthrough disabled."
+        "500":
+          description: "Unable to list module versions."
+  /{module}/@v/{version-tag}.info:
+    get:
+      tags:
+        - "modules"
+      summary: "Module's version info."
+      description: "Returns JSON-formatted metadata about a specific version of a module."
+      parameters:
+        - in: "path"
+          name: "module"
+          description: "Module name."
+          required: true
+          schema:
+            $ref: "#/components/schemas/Module"
+        - in: "path"
+          name: "version-tag"
+          description: "Module version tag."
+          required: true
+          schema:
+            $ref: "#/components/schemas/VersionTag"
+      responses:
+        "200":
+          description: "Module's version info."
+          content:
+            "text/plain; charset=UTF-8":
+              schema:
+                $ref: "#/components/schemas/ModuleVersionInfo"
+        "307":
+          description: "Module not found, fallthrough to default Go proxy."
+        "400":
+          description: "Bad request."
+        "404":
+          description: "Fallthrough disabled or version not found."
+        "500":
+          description: "Unable to list module's version info."
+  /{module}/@v/{version-tag}.mod:
+    get:
+      tags:
+        - "modules"
+      summary: "Module's version go.mod file."
+      description: "Returns the go.mod file for a specific version of a module."
+      parameters:
+        - in: "path"
+          name: "module"
+          description: "Module name."
+          required: true
+          schema:
+            $ref: "#/components/schemas/Module"
+        - in: "path"
+          name: "version-tag"
+          description: "Module's version tag."
+          required: true
+          schema:
+            $ref: "#/components/schemas/VersionTag"
+      responses:
+        "200":
+          description: "Module's version go.mod file."
+          content:
+            "text/plain; charset=UTF-8":
+              schema:
+                $ref: "#/components/schemas/ModuleGoMod"
+        "307":
+          description: "Module not found, fallthrough to default Go proxy."
+        "400":
+          description: "Bad request."
+        "404":
+          description: "Fallthrough disabled or version not found."
+        "500":
+          description: "Unable to provide module's version go.mod file."
+  /{module}/@v/{version-tag}.zip:
+    get:
+      tags:
+        - "modules"
+      summary: "Module's version source in .zip."
+      description: "Returns a zip file containing the contents of a specific version of a module."
+      parameters:
+        - in: "path"
+          name: "module"
+          description: "Module name."
+          required: true
+          schema:
+            $ref: "#/components/schemas/Module"
+        - in: "path"
+          name: "version-tag"
+          description: "Module's version tag."
+          required: true
+          schema:
+            $ref: "#/components/schemas/VersionTag"
+      responses:
+        "200":
+          description: "Module's version go.mod file."
+          content:
+            "application/zip":
+              schema:
+                $ref: "#/components/schemas/ModuleZIP"
+        "307":
+          description: "Module not found, fallthrough to default Go proxy."
+        "400":
+          description: "Bad request."
+        "404":
+          description: "Fallthrough disabled or version not found."
+        "500":
+          description: "Unable to provide module's version source in .zip."
+  /{module}/@latest:
+    get:
+      tags:
+        - "modules"
+      summary: "Module's latest version info."
+      description: "Returns JSON-formatted metadata about the latest known version of a module."
+      parameters:
+        - in: "path"
+          name: "module"
+          description: "Module name."
+          required: true
+          schema:
+            $ref: "#/components/schemas/Module"
+      responses:
+        "200":
+          description: "Module's latest version info."
+          content:
+            "text/plain; charset=UTF-8":
+              schema:
+                $ref: "#/components/schemas/ModuleVersionInfo"
+        "307":
+          description: "Module not found, fallthrough to default Go proxy."
+        "400":
+          description: "Bad request."
+        "404":
+          description: "Fallthrough disabled or version not found."
+        "500":
+          description: "Unable to list module's latest version info."
+  /versions.json:
+    get:
+      tags:
+        - "modules"
+      summary: "Latest versions."
+      description: "Returns information about the latest versions of configured modules."
+      responses:
+        "200":
+          description: "Latest versions."
+          content:
+            "application/json; charset=UTF-8":
+              schema:
+                $ref: "#/components/schemas/ModuleLatestVersions"
+  /dl/{name}/{version}/{arch}:
+    get:
+      tags:
+        - "downloads"
+      summary: "Download with architecture support enabled."
+      description: "Returns download with a given name, version and architecture. If the request to the source fails, the status code from the source is returned."
+      parameters:
+        - in: "path"
+          name: "name"
+          description: "Download name."
+          required: true
+          schema:
+            $ref: "#/components/schemas/DownloadName"
+        - in: "path"
+          name: "version"
+          description: "Download version."
+          required: true
+          schema:
+            $ref: "#/components/schemas/SemVer"
+        - in: "path"
+          name: "arch"
+          description: "Download architecture."
+          required: true
+          schema:
+            $ref: "#/components/schemas/Architecture"
+      responses:
+        "200":
+          description: "Requested download."
+        "400":
+          description: "Bad request."
+        "404":
+          description: "Download or version not found."
+  /dl/{name}/{version}:
+    get:
+      tags:
+        - "downloads"
+      summary: "Download with architecture support disabled."
+      description: "Returns download with a given name and version. If the request to the source fails, the status code from the source is returned."
+      parameters:
+        - in: "path"
+          name: "name"
+          description: "Download name."
+          required: true
+          schema:
+            $ref: "#/components/schemas/DownloadName"
+        - in: "path"
+          name: "version"
+          description: "Download version."
+          required: true
+          schema:
+            $ref: "#/components/schemas/SemVer"
+      responses:
+        "200":
+          description: "Requested download. Content-type depends on downloaded file."
+        "400":
+          description: "Bad request."
+        "404":
+          description: "Download or version not found."
+  /dl/versions.json:
+    get:
+      tags:
+        - "downloads"
+      summary: "Latest versions."
+      description: "Returns information about the latest versions of configured downloads."
+      responses:
+        "200":
+          description: "Latest versions."
+          content:
+            "application/json; charset=UTF-8":
+              schema:
+                $ref: "#/components/schemas/DownloadLatestVersions"
+        "500":
+          description: "Unable to get the latest versions."
+components:
+  schemas:
+    Architecture:
+      type: string
+      example: "amd64"
+    DateTime:
+      type: string
+      format: date-time
+      example: "2021-06-22T10:34:13.000+00:00"
+    DownloadName:
+      type: string
+      example: "tool"
+    DownloadLatestVersions:
+      type: object
+      properties:
+        latest_versions:
+          type: object
+          properties:
+            download_name:
+              $ref: "#/components/schemas/DownloadName"
+            version:
+              $ref: "#/components/schemas/SemVer"
+          example:
+            "tool": "1.11.0"
+            "translations.yaml": "1.8.1"
+    Module:
+      type: string
+      example: "github.com/livesport-tv/goproxy"
+    ModuleGoMod:
+      type: string
+      description: "Content of module's go.mod file."
+    ModuleLatestVersions:
+      type: object
+      properties:
+        go_version:
+          $ref: "#/components/schemas/SemVer"
+        latest_versions:
+          type: object
+          properties:
+            module:
+              $ref: "#/components/schemas/Module"
+            version:
+              $ref: "#/components/schemas/SemVer"
+          example:
+            "github.com/prometheus/client_golang": "1.11.0"
+            "github.com/sirupsen/logrus": "1.8.1"
+    ModuleVersionInfo:
+      type: object
+      properties:
+        Version:
+          $ref: "#/components/schemas/VersionTag"
+        Time:
+          $ref: "#/components/schemas/DateTime"
+    ModuleVersionsList:
+      type: string
+      example:
+        "1.0.0\r\n1.1.0\r\n1.2.0\r\n1.2.1-beta.1\r\n"
+    ModuleZIP:
+      type: string
+      format: binary
+      description: "Module's source in .zip."
+    SemVer:
+      type: string
+      example: "1.17.0"
+    VersionTag:
+      type: string
+      example: "v1.17.0"
+externalDocs:
+  description: "Browse source code"
+  url: "https://github.com/livesport-tv/goproxy"
