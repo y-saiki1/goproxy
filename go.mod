@@ -7,9 +7,6 @@ require (
 	github.com/stretchr/testify v1.7.0
 )
 
-// Module fallthrough is done by go install.
-retract v1.2.1
-
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
