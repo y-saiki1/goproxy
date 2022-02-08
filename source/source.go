@@ -7,6 +7,7 @@ package source
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"sync"
 
@@ -36,10 +37,10 @@ func (v *VersionNotFoundError) Unwrap() error {
 }
 
 func (v *VersionNotFoundError) Error() string {
-	if v == nil {
+	if v == nil || v.Err == nil {
 		return "version not found"
 	}
-	return v.Error()
+	return fmt.Sprintf("version not found: %s", v.Err.Error())
 }
 
 func IsVersionNotFound(err error) bool {
