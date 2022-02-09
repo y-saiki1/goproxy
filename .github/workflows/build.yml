@@ -169,6 +169,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            GOPROXY_VERSION=$VERSION
+            GOPROXY_VERSION=${{ env.VERSION }}
             BUILD_DATE=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}     
 
