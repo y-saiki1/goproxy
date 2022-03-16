@@ -9,7 +9,7 @@
       "source": null
     },
     {
-      "name": "example.lstv.dev/monorepo",
+      "name": "example.lstv.dev/module-name-1",
       "source": "gitlab.com",
       "source_params": {
         "project_id": 1,
@@ -19,7 +19,7 @@
       }
     },
     {
-      "name": "example.lstv.dev/monorepo",
+      "name": "example.lstv.dev/module-name-2",
       "source": "gitlab.com",
       "source_params": {
         "project_id": 1,
@@ -50,7 +50,7 @@
     }
   ],
   "versions": {
-    "go": "1.17.4",
+    "go": "1.18.0",
     "modules": [
       "example.com/my-favorite-module"
     ]
