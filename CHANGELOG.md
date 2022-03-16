@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.3] - 2022-03-16
+### Changed
+- Updated to Go 1.18.
+
 ## [1.0.2] - 2022-02-09
 ### Fixed
 - App version did not propagate to Docker image.
@@ -17,7 +21,8 @@
 ### Added
 - First release of Go Proxy.
 
-[Unreleased]: https://github.com/livesport-tv/goproxy/compare/v1.0.2...master
+[Unreleased]: https://github.com/livesport-tv/goproxy/compare/v1.0.3...master
+[1.0.3]: https://github.com/livesport-tv/goproxy/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/livesport-tv/goproxy/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/livesport-tv/goproxy/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/livesport-tv/goproxy/releases/tag/v1.0.0
