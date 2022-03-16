@@ -19,7 +19,7 @@ var (
 	ErrNotRegistered   = errors.New("source type is not registered")
 
 	sourcesMutex sync.Mutex
-	sources      = map[string]func(map[string]interface{}) (Source, error){}
+	sources      = map[string]func(map[string]any) (Source, error){}
 )
 
 type VersionNotFoundError struct {
@@ -48,7 +48,7 @@ func IsVersionNotFound(err error) bool {
 	return errors.As(err, &e)
 }
 
-func Register(name string, builder func(map[string]interface{}) (Source, error)) bool {
+func Register(name string, builder func(map[string]any) (Source, error)) bool {
 	sourcesMutex.Lock()
 	defer sourcesMutex.Unlock()
 	if _, ok := sources[name]; ok {
@@ -58,7 +58,7 @@ func Register(name string, builder func(map[string]interface{}) (Source, error))
 	return true
 }
 
-func New(name string, params map[string]interface{}) (Source, error) {
+func New(name string, params map[string]any) (Source, error) {
 	if b := builder(name); b != nil {
 		return b(params)
 	}
@@ -67,7 +67,7 @@ func New(name string, params map[string]interface{}) (Source, error) {
 
 type Source interface {
 	// Parametrize returns new source with specified parameters.
-	Parametrize(module string, params map[string]interface{}) (Source, error)
+	Parametrize(module string, params map[string]any) (Source, error)
 
 	// ConfigPreview returns key-value pairs of configuration preview.
 	ConfigPreview() (pairs []string)
@@ -103,7 +103,7 @@ type Source interface {
 	DownloadModule(ctx context.Context, dir, version string) error
 
 	// ParametrizeDownloads returns new Downloads with specified parameters.
-	ParametrizeDownloads(name, mode string, params map[string]interface{}) (Downloads, error)
+	ParametrizeDownloads(name, mode string, params map[string]any) (Downloads, error)
 }
 
 type Downloads interface {
@@ -115,7 +115,7 @@ type Downloads interface {
 	LatestDownloadVersion(ctx context.Context) (latest util.Version, err error)
 }
 
-func builder(name string) func(map[string]interface{}) (Source, error) {
+func builder(name string) func(map[string]any) (Source, error) {
 	sourcesMutex.Lock()
 	defer sourcesMutex.Unlock()
 	return sources[name]

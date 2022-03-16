@@ -20,7 +20,7 @@ type params struct {
 	versionDir bool
 }
 
-func newParams(module string, p map[string]interface{}) (*params, error) {
+func newParams(module string, p map[string]any) (*params, error) {
 	if p == nil {
 		return nil, errors.New("newGitlabParams: expected project_id")
 	}

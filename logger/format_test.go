@@ -20,7 +20,7 @@ func assertFormatter(t *testing.T,
 	typ string,
 	message string,
 	err error,
-	with ...interface{},
+	with ...any,
 ) {
 	t.Helper()
 	f := logrus.Fields{

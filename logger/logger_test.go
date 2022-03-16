@@ -37,14 +37,14 @@ func Test_logger_fields(t *testing.T) {
 	assert.Equal(t, logrus.Fields{
 		"type": "hello",
 		"err":  err,
-		"fields": []interface{}{
+		"fields": []any{
 			"a", "b",
 			"c", "d",
 		},
 	}, l.fields())
 }
 
-func assertEqualSlice(t *testing.T, expected, actual []interface{}) {
+func assertEqualSlice(t *testing.T, expected, actual []any) {
 	t.Helper()
 	assert.Equal(t, expected, actual)
 	assert.Equalf(t, cap(actual), len(actual), "expected same capacity and length: %d != %d", cap(actual), len(actual))
@@ -52,72 +52,72 @@ func assertEqualSlice(t *testing.T, expected, actual []interface{}) {
 
 func Test_appendPairs(t *testing.T) {
 	assert.Nil(t, appendPairs(nil, nil))
-	assert.Nil(t, appendPairs(nil, []interface{}{}))
-	assert.Nil(t, appendPairs(nil, []interface{}{"c"}))
-	assert.Nil(t, appendPairs([]interface{}{}, nil))
-	assert.Nil(t, appendPairs([]interface{}{}, []interface{}{}))
-	assert.Nil(t, appendPairs([]interface{}{"a"}, nil))
-	assert.Nil(t, appendPairs([]interface{}{"a"}, []interface{}{}))
+	assert.Nil(t, appendPairs(nil, []any{}))
+	assert.Nil(t, appendPairs(nil, []any{"c"}))
+	assert.Nil(t, appendPairs([]any{}, nil))
+	assert.Nil(t, appendPairs([]any{}, []any{}))
+	assert.Nil(t, appendPairs([]any{"a"}, nil))
+	assert.Nil(t, appendPairs([]any{"a"}, []any{}))
 
 	assertEqualSlice(t,
-		[]interface{}{"c", "d"},
-		appendPairs(nil, []interface{}{"c", "d"}),
+		[]any{"c", "d"},
+		appendPairs(nil, []any{"c", "d"}),
 	)
 	assertEqualSlice(t,
-		[]interface{}{"a", "b"},
-		appendPairs([]interface{}{"a", "b"}, nil),
+		[]any{"a", "b"},
+		appendPairs([]any{"a", "b"}, nil),
 	)
 	assertEqualSlice(t,
-		[]interface{}{"a", "b"},
-		appendPairs([]interface{}{"a", "b"}, []interface{}{"c"}),
+		[]any{"a", "b"},
+		appendPairs([]any{"a", "b"}, []any{"c"}),
 	)
 	assertEqualSlice(t,
-		[]interface{}{"a", "b", "c", "d"},
-		appendPairs([]interface{}{"a", "b", "x", "y", "z"}[:2], []interface{}{"c", "d"}),
+		[]any{"a", "b", "c", "d"},
+		appendPairs([]any{"a", "b", "x", "y", "z"}[:2], []any{"c", "d"}),
 	)
 	assertEqualSlice(t,
-		[]interface{}{"a", "b", "c", "d"},
-		appendPairs([]interface{}{"a", "b"}, []interface{}{"c", "d"}),
+		[]any{"a", "b", "c", "d"},
+		appendPairs([]any{"a", "b"}, []any{"c", "d"}),
 	)
 	assertEqualSlice(t,
-		[]interface{}{"a", "b", "c", "d"},
-		appendPairs([]interface{}{"a", "b"}, []interface{}{1, 2, "c", "d"}),
+		[]any{"a", "b", "c", "d"},
+		appendPairs([]any{"a", "b"}, []any{1, 2, "c", "d"}),
 	)
 	assertEqualSlice(t,
-		[]interface{}{"a", "c"},
-		appendPairs([]interface{}{"a", "b"}, []interface{}{1, 2, "a", "c"}),
+		[]any{"a", "c"},
+		appendPairs([]any{"a", "b"}, []any{1, 2, "a", "c"}),
 	)
 	assertEqualSlice(t,
-		[]interface{}{"a", "b"},
-		appendPairs([]interface{}{"a", "b"}, []interface{}{1, 2, "timestamp", "c", "level", "d", "type", "e", "message", "f", "err", "g"}),
+		[]any{"a", "b"},
+		appendPairs([]any{"a", "b"}, []any{1, 2, "timestamp", "c", "level", "d", "type", "e", "message", "f", "err", "g"}),
 	)
 
 	// test append overlapping
-	a := []interface{}{"a", "b", "x", "y"}[:2]
-	b := appendPairs(a, []interface{}{"c", "d"})
-	c := appendPairs(a, []interface{}{"e", "f"})
-	d := appendPairs(a, []interface{}{"a", "c"})
-	assertEqualSlice(t, []interface{}{"a", "b", "x", "y"}, a[:4])
-	assertEqualSlice(t, []interface{}{"a", "b", "c", "d"}, b)
-	assertEqualSlice(t, []interface{}{"a", "b", "e", "f"}, c)
-	assertEqualSlice(t, []interface{}{"a", "c"}, d)
+	a := []any{"a", "b", "x", "y"}[:2]
+	b := appendPairs(a, []any{"c", "d"})
+	c := appendPairs(a, []any{"e", "f"})
+	d := appendPairs(a, []any{"a", "c"})
+	assertEqualSlice(t, []any{"a", "b", "x", "y"}, a[:4])
+	assertEqualSlice(t, []any{"a", "b", "c", "d"}, b)
+	assertEqualSlice(t, []any{"a", "b", "e", "f"}, c)
+	assertEqualSlice(t, []any{"a", "c"}, d)
 }
 
 func Test_cleanPairs(t *testing.T) {
-	assertEqualSlice(t, []interface{}(nil), cleanPairs([]interface{}{}))
-	assertEqualSlice(t, []interface{}(nil), cleanPairs([]interface{}{"a"}))
-	assertEqualSlice(t, []interface{}{"a", "b"}, cleanPairs([]interface{}{"a", "b"}))
-	a := make([]interface{}, 2, 4)
+	assertEqualSlice(t, []any(nil), cleanPairs([]any{}))
+	assertEqualSlice(t, []any(nil), cleanPairs([]any{"a"}))
+	assertEqualSlice(t, []any{"a", "b"}, cleanPairs([]any{"a", "b"}))
+	a := make([]any, 2, 4)
 	a[0] = "a"
 	a[1] = "b"
-	assertEqualSlice(t, []interface{}{"a", "b"}, cleanPairs(a))
+	assertEqualSlice(t, []any{"a", "b"}, cleanPairs(a))
 	a = append(a, "c")
-	assertEqualSlice(t, []interface{}{"a", "b"}, cleanPairs(a))
+	assertEqualSlice(t, []any{"a", "b"}, cleanPairs(a))
 }
 
 func Test_ContextWith(t *testing.T) {
 	assert.Nil(t, ContextWith(nil))
-	assert.Equal(t, context.WithValue(context.Background(), ctxKey, []interface{}{"a", "b"}), ContextWith(context.Background(), "a", "b"))
+	assert.Equal(t, context.WithValue(context.Background(), ctxKey, []any{"a", "b"}), ContextWith(context.Background(), "a", "b"))
 }
 
 func Test_Default(t *testing.T) {

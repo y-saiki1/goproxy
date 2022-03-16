@@ -53,7 +53,7 @@ var (
 	}
 )
 
-func toJSON(value interface{}) (jsonValue json.RawMessage) {
+func toJSON(value any) (jsonValue json.RawMessage) {
 	defer func() {
 		if r := recover(); r != nil {
 			jsonValue = stringToJSON(fmt.Sprintf("%%!panic(%s)", r))

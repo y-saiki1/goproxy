@@ -35,7 +35,7 @@ type Client interface {
 
 func ServeClient(c Client, w http.ResponseWriter, _ *http.Request) {
 	storedModulesInfo, storedModulesInfoErr := c.StoredModules()
-	values := map[string]interface{}{
+	values := map[string]any{
 		"Version":             util.BuiltinVersion(),
 		"ConfiguredModules":   c.ConfiguredModules(),
 		"StoredModules":       storedModulesInfo,

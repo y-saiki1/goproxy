@@ -10,8 +10,8 @@ import (
 	"time"
 )
 
-func FuncMap() map[string]interface{} {
-	return map[string]interface{}{
+func FuncMap() map[string]any {
+	return map[string]any{
 		"formatTime":           formatTime,
 		"formatSize":           formatSize,
 		"isZeroOrEven":         isZeroOrEven,
