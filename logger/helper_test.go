@@ -80,7 +80,7 @@ func Test_toJSON(t *testing.T) {
 	parray := &varray
 	vslice := []int{2, 7}
 	pslice := &vslice
-	vmap := map[string]interface{}{
+	vmap := map[string]any{
 		"x": 2,
 		"y": struct {
 			Z int `json:"z"`

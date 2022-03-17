@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
   description: "Go proxy with monorepo support (more projects with `go.mod` and different versions in the same GIT repository)."
-  version: "1.0.2"
+  version: "1.0.3"
   title: "Go Proxy"
   contact:
     name: "maintainer"
-    email: "goproxy@livesporttv.cz"
+    email: "opensource@livesporttv.cz"
     url: "https://lstv.dev/"
 tags:
   - name: "common"

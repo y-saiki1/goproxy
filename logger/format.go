@@ -31,7 +31,7 @@ func (_ *formatter) Format(entry *logrus.Entry) ([]byte, error) {
 		b.Write(toJSON(err))
 	}
 	b.WriteString(",\"data\":{")
-	if fields, ok := entry.Data[keyFields].([]interface{}); ok {
+	if fields, ok := entry.Data[keyFields].([]any); ok {
 		if l := len(fields); l > 1 {
 			for i := 0; i < l; i += 2 {
 				k := fields[i]

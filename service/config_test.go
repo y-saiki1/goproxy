@@ -14,9 +14,9 @@ import (
 
 func Test_jsonUnmarshalWithNumbers(t *testing.T) {
 	b := strings.NewReader(`{"number":1.15}`)
-	m := map[string]interface{}{}
+	m := map[string]any{}
 	assert.NoError(t, jsonUnmarshalWithNumbers(b, &m))
-	assert.Equal(t, map[string]interface{}{
+	assert.Equal(t, map[string]any{
 		"number": json.Number("1.15"),
 	}, m)
 }

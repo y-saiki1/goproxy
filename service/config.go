@@ -20,22 +20,22 @@ type Config struct {
 	LogLevel          string                    `json:"log_level"`
 	Modules           []ModuleConfig            `json:"modules"`
 	Downloads         map[string]DownloadConfig `json:"downloads"`
-	Sources           []map[string]interface{}  `json:"sources"`
+	Sources           []map[string]any          `json:"sources"`
 	Versions          VersionsConfig            `json:"versions"`
 	DefaultGoProxyURL string                    `json:"default_go_proxy_url"`
 	DownloadsPrefix   string                    `json:"downloads_prefix"`
 }
 
 type ModuleConfig struct {
-	Name         string                 `json:"name"`
-	Source       *string                `json:"source"`
-	SourceParams map[string]interface{} `json:"source_params"`
+	Name         string         `json:"name"`
+	Source       *string        `json:"source"`
+	SourceParams map[string]any `json:"source_params"`
 }
 
 type DownloadConfig struct {
-	Mode         string                 `json:"mode"`
-	Source       string                 `json:"source"`
-	SourceParams map[string]interface{} `json:"source_params"`
+	Mode         string         `json:"mode"`
+	Source       string         `json:"source"`
+	SourceParams map[string]any `json:"source_params"`
 }
 
 type VersionsConfig struct {
@@ -57,7 +57,7 @@ func LoadConfig(file string) (*Config, error) {
 	return c, nil
 }
 
-func jsonUnmarshalWithNumbers(r io.Reader, v interface{}) error {
+func jsonUnmarshalWithNumbers(r io.Reader, v any) error {
 	d := json.NewDecoder(r)
 	d.UseNumber()
 	return d.Decode(v)

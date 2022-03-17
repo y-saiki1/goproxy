@@ -31,7 +31,7 @@ type Logger interface {
 	Ctx(ctx context.Context) Logger
 	Err(err error) Logger
 
-	With(pairs ...interface{}) Logger
+	With(pairs ...any) Logger
 
 	Fatal(message string)
 	Panic(message string)
@@ -42,14 +42,14 @@ type Logger interface {
 	Trace(message string)
 
 	NoErr(err error)
-	NoErrLast(lastErr ...interface{})
+	NoErrLast(lastErr ...any)
 	NoErrClose(closer io.Closer)
 }
 
 type logger struct {
 	typ   string
 	err   error
-	pairs []interface{}
+	pairs []any
 }
 
 // Type returns new logger with specified type name.
@@ -91,7 +91,7 @@ func (l *logger) Err(err error) Logger {
 //     "number", 7,
 //     "slice", []int{7, 8},
 //   )
-func (l *logger) With(pairs ...interface{}) Logger {
+func (l *logger) With(pairs ...any) Logger {
 	return &logger{
 		typ:   l.typ,
 		err:   l.err,
@@ -137,7 +137,7 @@ func (l *logger) NoErr(err error) {
 // NoErrLast checks if last passed argument is not nil value of error type and pass this value to NoErr.
 // If last passed argument is nil, nothing happen.
 // Otherwise, Panic is called.
-func (l *logger) NoErrLast(lastErr ...interface{}) {
+func (l *logger) NoErrLast(lastErr ...any) {
 	lenLastErr := len(lastErr)
 	if lenLastErr == 0 {
 		l.Panic("invalid NoErrLast arguments: no arguments")
@@ -165,7 +165,7 @@ func (l *logger) withStack() *logger {
 	return &logger{
 		typ: l.typ,
 		err: l.err,
-		pairs: appendPairs(l.pairs, []interface{}{
+		pairs: appendPairs(l.pairs, []any{
 			keyStack, string(debug.Stack()),
 		}),
 	}
@@ -191,7 +191,7 @@ func (l *logger) fields() logrus.Fields {
 	return fields
 }
 
-func appendPairs(a, b []interface{}) []interface{} {
+func appendPairs(a, b []any) []any {
 	ca := cleanPairs(a)
 	cb := cleanPairs(b)
 	if cb == nil {
@@ -199,7 +199,7 @@ func appendPairs(a, b []interface{}) []interface{} {
 	}
 	lca := len(ca)
 	lcb := len(cb)
-	r := make([]interface{}, lca, lca+lcb)
+	r := make([]any, lca, lca+lcb)
 	copy(r, ca)
 newPairs:
 	for i := 0; i < lcb; i += 2 {
@@ -219,7 +219,7 @@ newPairs:
 	return cleanPairs(r)
 }
 
-func cleanPairs(a []interface{}) []interface{} {
+func cleanPairs(a []any) []any {
 	l := len(a)
 	if l < 2 {
 		return nil
@@ -234,12 +234,12 @@ type ctxKeyType struct{}
 
 var ctxKey = ctxKeyType{}
 
-func ctxFields(ctx context.Context) []interface{} {
-	pairs, _ := ctx.Value(ctxKey).([]interface{})
+func ctxFields(ctx context.Context) []any {
+	pairs, _ := ctx.Value(ctxKey).([]any)
 	return pairs
 }
 
-func ContextWith(ctx context.Context, pairs ...interface{}) context.Context {
+func ContextWith(ctx context.Context, pairs ...any) context.Context {
 	if ctx == nil {
 		return nil
 	}

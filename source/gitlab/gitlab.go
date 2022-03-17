@@ -39,7 +39,7 @@ type Source struct {
 	params      *params
 }
 
-func New(config map[string]interface{}) (source.Source, error) {
+func New(config map[string]any) (source.Source, error) {
 	if config == nil {
 		return nil, errors.New("gitlab.New: expected url and auth")
 	}
@@ -88,7 +88,7 @@ func (s *Source) allowInsecureTLS() {
 	}
 }
 
-func (s *Source) Parametrize(module string, params map[string]interface{}) (source.Source, error) {
+func (s *Source) Parametrize(module string, params map[string]any) (source.Source, error) {
 	p, err := newParams(module, params)
 	if err != nil {
 		return nil, err
@@ -250,7 +250,7 @@ func (s *Source) DownloadModule(ctx context.Context, dir, version string) error 
 	return nil
 }
 
-func (s *Source) ParametrizeDownloads(name, mode string, params map[string]interface{}) (source.Downloads, error) {
+func (s *Source) ParametrizeDownloads(name, mode string, params map[string]any) (source.Downloads, error) {
 	if mode != "generic-packages" {
 		return nil, fmt.Errorf("ParametrizeDownloads: invalid mode %q", mode)
 	}

@@ -343,8 +343,8 @@ func (p *GoProxy) Versions(w http.ResponseWriter, req *http.Request) {
 		"func", "Versions",
 	)
 
-	latestVersions := map[string]interface{}{}
-	content := map[string]interface{}{
+	latestVersions := map[string]any{}
+	content := map[string]any{
 		"go_version":      p.versions.Go.String(),
 		"latest_versions": latestVersions,
 	}
