@@ -5,6 +5,8 @@
 ## [1.0.3] - 2022-03-17
 ### Changed
 - Updated to Go 1.18.
+- Updated:
+  - `github.com/stretchr/testify` to `1.7.1`
 
 ## [1.0.2] - 2022-02-09
 ### Fixed
