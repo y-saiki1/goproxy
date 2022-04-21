@@ -1,9 +1,11 @@
 # Go Proxy
 
-[![License: MIT](https://img.shields.io/github/license/livesport-tv/goproxy)](https://opensource.org/licenses/MIT)
-[![tests](https://github.com/livesport-tv/goproxy/actions/workflows/tests.yml/badge.svg)](https://github.com/livesport-tv/goproxy/actions/workflows/tests.yml)
-[![build](https://github.com/livesport-tv/goproxy/actions/workflows/build.yml/badge.svg)](https://github.com/livesport-tv/goproxy/actions/workflows/build.yml)
-[![Latest release](https://img.shields.io/github/v/release/livesport-tv/goproxy?display_name=tag&sort=semver)](https://github.com/livesport-tv/goproxy/releases)
+[![Latest release][release-img]][release]
+[![License: MIT][licence-img]][licence]
+[![tests][tests-img]][tests]
+[![build][build-img]][build]
+[![Go Report Card][goreportcard-img]][goreportcard]
+[![codecov][codecov-img]][codecov]
 
 Open source implementation of Go proxy with monorepo support (more projects with `go.mod` and different versions in the same GIT repository).
 
@@ -128,3 +130,16 @@ To set version:
 ```shell script
 docker build --build-arg GOPROXY_VERSION=2.0.0 -t goproxy .
 ```
+
+[build]: https://github.com/livesport-tv/goproxy/actions/workflows/build.yml
+[build-img]: https://github.com/livesport-tv/goproxy/actions/workflows/build.yml/badge.svg
+[codecov]: https://codecov.io/gh/livesport-tv/goproxy
+[codecov-img]: https://codecov.io/gh/livesport-tv/goproxy/branch/master/graph/badge.svg?token=JYNMHALEYL
+[goreportcard]: https://goreportcard.com/report/go.lstv.dev/goproxy
+[goreportcard-img]: https://goreportcard.com/badge/go.lstv.dev/goproxy
+[licence]: https://opensource.org/licenses/MIT
+[licence-img]: https://img.shields.io/github/license/livesport-tv/goproxy
+[release]: https://github.com/livesport-tv/goproxy/releases
+[release-img]: https://img.shields.io/github/v/release/livesport-tv/goproxy?display_name=tag&sort=semver
+[tests]: https://github.com/livesport-tv/goproxy/actions/workflows/tests.yml
+[tests-img]: https://github.com/livesport-tv/goproxy/actions/workflows/tests.yml/badge.svg
